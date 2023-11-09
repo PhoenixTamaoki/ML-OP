@@ -1,7 +1,9 @@
-alpha = 2; beta = 4/3; delta = 4; gamma = 3; tf = 10; 
+alpha = 2; beta = 4/3; delta = 4; gamma = 3; tf = 20; 
+%alpha = 4; beta = 0.4; delta = 0.9; gamma = 0.3; tf = 20; 
 tspan = [0 tf];
 f = @(t,y) [alpha*y(1)-beta*y(1)*y(2); delta*y(1)*y(2)-gamma*y(2)];
 [t,u] = ode45(f,[0 tf],[2 1]);
+%[t,u] = ode45(f,[0 tf],[10 10]);
 plot(t,u(:,1),'b-',t,u(:,2),'r-');
 hold on;
 
@@ -15,8 +17,7 @@ title('Predator Prey Model');
 xlabel('Time');
 ylabel('Population');
 legend('True Prey Population', 'True Predator Population', 'Noisy Prey Data', 'Noisy Predator Data')
-savefig('')
 
 %Write to text file
-csvwrite('pred_prey_true.txt',u)
-csvwrite('pred_prey_noisy_data.txt',data)
+csvwrite('pred_prey_true.txt',[t,u])
+csvwrite('pred_prey_noisy_data.txt',[t(indices),data])
