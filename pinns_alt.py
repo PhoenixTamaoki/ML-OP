@@ -1,27 +1,25 @@
 import numpy as np
 import torch
-
+import torch.nn as nn
+import torch.optim as optim
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
+# predator prey differential equation 
 def lotka_volterra(y, t, alpha, beta, delta, gamma):
     x, y = y
     dx_dt = alpha * x - beta * x * y
     dy_dt = delta * x * y - gamma * y
     return [dx_dt, dy_dt]
 
-#Parameters
+# Parameters for lotka voltera
 alpha = 2
 beta = 4/3
 delta = 4
 gamma = 3
-# alpha = 1
-# beta = 0.5
-# delta = 1
-# gamma = 11
 
-# Initial values
+# Initial values for predator and prey populations 
 x0 = 2  # Initial prey population
 y0 = 1   # Initial predator population
 initial_conditions = [x0, y0]
@@ -43,7 +41,7 @@ true_data = solution[idx]
 noise = np.random.normal(-0.1, 0.1, true_data.shape)
 training_y = true_data + noise
 
-# plot the training datas and the true solution
+# plot the training data and the true solution
 plt.figure(figsize=(8, 6))
 plt.plot(t, solution[:, 0], label='Prey (x)')
 plt.plot(t, solution[:, 1], label='Predator (y)')
@@ -56,22 +54,17 @@ plt.legend()
 plt.grid(True)
 plt.show()
 
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-
-# Define the PINN model
+# Nerual network model, uses pytorch neural netowrk model
 class PINNModel(nn.Module):
+    # our neural network uses 6 layers with 256 neurons 
     def __init__(self):
         super(PINNModel, self).__init__()
-        self.dense1 = nn.Linear(1, 256)  # Input: time
-        #self.dense2 = nn.Linear(50, 50)
-        self.dense2 = nn.Linear(256, 256)
+        self.dense1 = nn.Linear(1, 256)  # 1 Input: time
+        self.dense2 = nn.Linear(256, 256) 
         self.dense3 = nn.Linear(256, 256)
         self.dense4 = nn.Linear(256, 256)
         self.dense5 = nn.Linear(256, 256)
-        self.dense6 = nn.Linear(256, 2)  # Output: prey, predator
+        self.dense6 = nn.Linear(256, 2)  # 2 Outputs: prey, predator
 
     def forward(self, t):
         t = t.view(-1,1)
@@ -91,7 +84,7 @@ if (type(training_t) is np.ndarray):
 
 prey_sample, pred_sample = torch.split(training_y, 1, dim=1)
 
-# # Instantiate the PINN model and define optimizer
+# Instantiate the PINN model and define optimizer
 model = PINNModel()
 #optimizer = optim.Adam(model.parameters(), lr=0.001)
 optimizer = optim.Adam(model.parameters(), lr=0.0005)
