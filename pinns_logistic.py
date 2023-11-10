@@ -27,7 +27,7 @@ solution = odeint(log_growth, y0, t)
 
 # Generate training data (based on noisy data or the true solution)
 # training_t, training_y(prey, predator) noisy with gaussian, true_solution
-pool = range(0,500)
+pool = range(0,100)
 idx = np.random.choice(pool, 10, replace=True)
 training_t = t[idx]
 # reshape to (100, 1)
@@ -62,17 +62,10 @@ class PINNModel(nn.Module):
         self.dense3 = nn.Linear(256, 256)
         self.dense4 = nn.Linear(256, 256)
         self.dense5 = nn.Linear(256, 256)
-        #self.dense6 = nn.Linear(256, 1)  # Output: prey, predator
-        #For trying to learn the growth rate R
-        self.dense6 = nn.Linear(256,2)
+        self.dense6 = nn.Linear(256,1)
+        #self.dense6 = nn.Linear(256,2) #for calculating the growth rate future experiment
     def forward(self, t):
         t = t.view(-1,1)
-        # x = torch.tanh(self.dense1(t))
-        # x = torch.tanh(self.dense2(x))
-        # x = torch.tanh(self.dense3(x))
-        # x = torch.tanh(self.dense4(x))
-        # x = torch.tanh(self.dense5(x))
-        # sol = torch.tanh(self.dense6(x))
         relu = torch.nn.ReLU()
         x = relu(self.dense1(t))
         x = relu(self.dense2(x))
@@ -99,7 +92,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.0005)
 t_phys = torch.linspace(0,100,100, requires_grad=True)
 
 # # Training loop
-num_epochs = 700  # Adjust as needed
+num_epochs = 20000  # Adjust as needed
 for epoch in range(num_epochs):
     optimizer.zero_grad()
     predictions_data = model(training_t)
@@ -115,9 +108,7 @@ for epoch in range(num_epochs):
     dPdt = torch.autograd.grad(predictions_phys, t_phys, grad_outputs=torch.ones_like(predictions_phys), create_graph=True)[0]
     
     phys_loss = torch.mean((dPdt - r*predictions_phys*(1 - (predictions_phys/K)))**2)
-    #n = predictions_phys.size(dim=0)-1
-    #boundary_loss = (start - predictions_phys[0].item())**2 + (end - predictions_phys[n].item())**2
-    loss = data_loss + 0.01*phys_loss #+ 10*boundary_loss.item()
+    loss = data_loss + 0.01*phys_loss
 
     # if epoch % 500 == 0:
     #     print(epoch)
@@ -158,5 +149,5 @@ plt.plot(t, solution, 'r-')
 plt.plot(test_t.detach().numpy(), results.detach().numpy(), 'g--')
 plt.title('Logistic Growth with Physics Loss')
 plt.xlabel('Time')
-plt.savefig('experiment1_7.jpeg', format = 'jpeg')
+plt.savefig('experiment1_11.jpeg', format = 'jpeg')
 plt.show()

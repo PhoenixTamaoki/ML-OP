@@ -32,6 +32,20 @@ small in magnitude and thus the update does almost nothing.
 
 We saw that the ReLU function worked much better and did not encounter the same vanishing gradients problem.
 
+Experiment 1.8 In this experiment we tried to reduce the domain the samples were taken on and its effects on the PINNs solution
+In order to get this we needed to greatly increase the number of epochs to 20000. However, we can see that the solution is much less 
+accurate, it still generally knows to decrease slope after a certain point.
+
+Experiment 1.9 This is the same experiment at 1.8 but in this one we only did data loss. Here after 20000 epochs we have that
+the neural network, not having any information about the underlying differential equation, just follows the trend of the data
+and keeps increasing.
+
+Experiment 1.10 We see do the same experiment as 1.9 but in this case the domain the samples are taken from is even smaller.
+We observe similar behavior to 1.9.
+
+Experiment 1.11 Same as 1.10 except with physics loss included. Again we see that the learned solution is not very accurate but
+the algorithm at least knows to reduce slope.
+
 Other comments: From this case we see that the model is much harder to build and also much slower than classical methods
 for solving the same problem. However, one advantage of this PINNs method is that once the model is trained you are able to
 recalculate the predicted value for any time value you want. In contrast, with traditional methods, in order to get the value of a point
@@ -39,6 +53,16 @@ that is not on the mesh you initially set up, you need to make an entirely new m
 this PINNs method in practice you would want to solve a much more complex problem which is harder for traditional methods to solve. However, as this is
 only a pedagogical project we stick to relatively simple ODEs.
 
+2 Experiments for Projectile Motion with demonstrating
+
+These are the experiments that we walk students through in our problem set since this turned out to be the problem that our PINNs algorithm was able to solve most accurately.
+
+The code is in pset_nn_sol.jpeg and the results for the neural network without physics loss is in pset_nn_sol.jpeg.
+The results for the PINNs algorithm are in pset_PINN_sol.jpeg. We see that the neural network with only data loss did not output
+a physically feasible flight path, however, we see that the PINNs was able to get a fairly accurate flight path with relatively few
+epochs.
+
 
 Next, we generalize to a more complex nonlinear ODE, the Lotka-Volterra Equation which models the population dynamics of an ecosystem consisting of
-a prey species and a predator species. We plan on doing similar experiments to the above. 
+a prey species and a predator species. We plan on doing similar experiments to the above. We also want to do an experiment demonstrating the ability of 
+PINNs to solve inverse problems.
