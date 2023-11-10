@@ -30,6 +30,8 @@ model is not capable of learning. We believe this might be because the model get
 that this might be because of the phenomenon of vanishing gradients problem. This occurs when the gradient becomes extremely
 small in magnitude and thus the update does almost nothing.
 
+We saw that the ReLU function worked much better and did not encounter the same vanishing gradients problem.
+
 Other comments: From this case we see that the model is much harder to build and also much slower than classical methods
 for solving the same problem. However, one advantage of this PINNs method is that once the model is trained you are able to
 recalculate the predicted value for any time value you want. In contrast, with traditional methods, in order to get the value of a point
@@ -38,4 +40,5 @@ this PINNs method in practice you would want to solve a much more complex proble
 only a pedagogical project we stick to relatively simple ODEs.
 
 
-Next, we generalize to a more complex nonlinear ODE which is a generalization of the 
+Next, we generalize to a more complex nonlinear ODE, the Lotka-Volterra Equation which models the population dynamics of an ecosystem consisting of
+a prey species and a predator species. We plan on doing similar experiments to the above. 
