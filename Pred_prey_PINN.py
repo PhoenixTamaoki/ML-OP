@@ -86,53 +86,28 @@ prey_sample, pred_sample = torch.split(training_y, 1, dim=1)
 
 # Instantiate the PINN model and define optimizer
 model = PINNModel()
-#optimizer = optim.Adam(model.parameters(), lr=0.001)
 optimizer = optim.Adam(model.parameters(), lr=0.0005)
-#optimizer = optim.LBFGS(model.parameters())
 
-#grid to test phys loss
+# time grid to test phys loss
 t_phys = torch.linspace(0,5,100, requires_grad=True)
 
-# # Training loop
+# Training loop
 num_epochs = 10000  # Adjust as needed
 for epoch in range(num_epochs):
     optimizer.zero_grad()
     predictions_data = model(training_t)
     prey_data, pred_data = torch.split(predictions_data, 1, dim=1)
-    
-    # print(prey_data.shape)
-    # print(pred_data.shape)
-    # print(prey_sample.shape)
-    # print(pred_sample.shape)
 
     predictions_phys = model(t_phys)
     predictions_phys = predictions_phys.requires_grad_()
-    # print(predictions_phys.shape)
-    #dpdt = torch.autograd.grad(predictions_phys, t_phys, grad_outputs=torch.ones_like(predictions_phys), create_graph=True)
-    #dxdt, dydt = dpdt[0][0], dpdt[0][1]
 
     dxdt = torch.autograd.grad(predictions_phys[:,0], t_phys, grad_outputs=torch.ones_like(predictions_phys[:,0]), create_graph=True)
     dydt = torch.autograd.grad(predictions_phys[:,1], t_phys, grad_outputs=torch.ones_like(predictions_phys[:,1]), create_graph=True)
-
-    # print(dxdt)
-    # print(dydt)
-
+    
     dxdt = dxdt[0]
     dydt = dydt[0]
 
-    # print(dxdt)
-    # print(dxdt.shape)
-
-    # print(dxdt.shape)
-    # print(dydt.shape)
-
-    # print([len(a) for a in dpdt])
-    # print(dxdt.shape)
-    # print(dydt.shape)
-
     prey_phys, pred_phys = torch.split(predictions_phys, 1, dim=1)
-    #dxdt = dpdt[0]
-    # dydt = dpdt[1]
 
     data_loss = torch.mean((prey_data - prey_sample)**2) + torch.mean((pred_data - pred_sample)**2)
     phys_loss = torch.mean((dxdt - alpha * prey_phys+ beta * prey_phys * pred_phys)**2) + torch.mean((dydt - gamma * prey_phys * pred_phys + delta * pred_phys)**2)
@@ -163,17 +138,6 @@ test_t = torch.tensor(test_t, requires_grad=True, dtype=torch.float32)
 
 results = model.forward(test_t)
 test_y = torch.split(results, 1, dim=1)
-
-# plt.plot(t, solution[:, 0], label='Prey (x)')
-# plt.plot(t, solution[:, 1], label='Predator (y)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 0], label='Prey (x)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 1], label='Predator (y)')
-# plt.title('Lotka-Volterra Model')
-# plt.xlabel('Time')
-# plt.ylabel('Population')
-# plt.legend()
-# plt.grid(True)
-# plt.show()
 
 plt.plot(training_t.detach().numpy(),prey_sample.detach().numpy(), 'rx', training_t.detach().numpy(),pred_sample.detach().numpy(),'bo')
 plt.plot(t, solution[:, 0], label='Prey (x)')
