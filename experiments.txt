@@ -1,7 +1,7 @@
 Experiment
 
 1.1 No Physics loss with 700 epochs with training data from whole domain with 20 samples
-1.2 Physics loss with 700 epochs with traing data from whole domain with 20 samples
+1.2 Physics loss with 700 epochs with training data from whole domain with 20 samples
 
 Remarks: Seems like both have similar performance as it seems like there is enough data to capture the
 complexity of the target function
