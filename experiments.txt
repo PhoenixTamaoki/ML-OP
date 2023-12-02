@@ -1,13 +1,13 @@
 Experiment
 
 1.1 No Physics loss with 700 epochs with training data from whole domain with 20 samples
-1.2 Physics loss with 700 epochs with traing data from whole domain with 20 samples
+1.2 Physics loss with 700 epochs with training data from whole domain with 20 samples
 
 Remarks: Seems like both have similar performance as it seems like there is enough data to capture the
 complexity of the target function
 
 1.3 No physics loss with 700 epochs with training data from whole domain with 10 samples
-1.4 Physics loss with 700 epochs with traing data from whole domain with 10 samples
+1.4 Physics loss with 700 epochs with training data from whole domain with 10 samples
 
 Remarks: Looks like the data is fit better with the added physics loss regularization as the data is
 becoming more sparse
@@ -53,7 +53,7 @@ that is not on the mesh you initially set up, you need to make an entirely new m
 this PINNs method in practice you would want to solve a much more complex problem which is harder for traditional methods to solve. However, as this is
 only a pedagogical project we stick to relatively simple ODEs.
 
-2 Experiments for Projectile Motion with demonstrating
+2 Experiments for Projectile Motion with demonstration
 
 These are the experiments that we walk students through in our problem set since this turned out to be the problem that our PINNs algorithm was able to solve most accurately.
 
@@ -64,5 +64,7 @@ epochs.
 
 
 Next, we generalize to a more complex nonlinear ODE, the Lotka-Volterra Equation which models the population dynamics of an ecosystem consisting of
-a prey species and a predator species. We plan on doing similar experiments to the above. We also want to do an experiment demonstrating the ability of 
+a prey species and a predator species. The draft for the code for this is located in our pred_prey_PINN.ipynb
+file, however, this code still needs some tuning with the parameters as we wish to get better results.
+We plan on doing similar experiments to the above with this ODE. We also want to do an experiment demonstrating the ability of 
 PINNs to solve inverse problems.
