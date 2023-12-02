@@ -64,5 +64,7 @@ epochs.
 
 
 Next, we generalize to a more complex nonlinear ODE, the Lotka-Volterra Equation which models the population dynamics of an ecosystem consisting of
-a prey species and a predator species. We plan on doing similar experiments to the above. We also want to do an experiment demonstrating the ability of 
+a prey species and a predator species. The draft for the code for this is located in our pred_prey_PINN.ipynb
+file, however, this code still needs some tuning with the parameters as we wish to get better results.
+We plan on doing similar experiments to the above with this ODE. We also want to do an experiment demonstrating the ability of 
 PINNs to solve inverse problems.
