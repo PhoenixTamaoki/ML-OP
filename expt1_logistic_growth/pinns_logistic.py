@@ -22,9 +22,6 @@ t = np.linspace(0, 100,500)
 # Solve the ODE
 solution = odeint(log_growth, y0, t)
 
-#start = solution[0]
-#end = solution[499]
-
 # Generate training data (based on noisy data or the true solution)
 # training_t, training_y(prey, predator) noisy with gaussian, true_solution
 pool = range(0,100)
@@ -57,13 +54,11 @@ class PINNModel(nn.Module):
     def __init__(self):
         super(PINNModel, self).__init__()
         self.dense1 = nn.Linear(1, 256)  # Input: time
-        #self.dense2 = nn.Linear(50, 50)
         self.dense2 = nn.Linear(256, 256)
         self.dense3 = nn.Linear(256, 256)
         self.dense4 = nn.Linear(256, 256)
         self.dense5 = nn.Linear(256, 256)
         self.dense6 = nn.Linear(256,1)
-        #self.dense6 = nn.Linear(256,2) #for calculating the growth rate future experiment
     def forward(self, t):
         t = t.view(-1,1)
         relu = torch.nn.ReLU()
@@ -75,18 +70,17 @@ class PINNModel(nn.Module):
         sol = self.dense6(x)
         return sol
     
-#Convert training data to np ndarray
+# Convert training data to np ndarray
 if (type(training_t) is np.ndarray):
     training_t = torch.tensor(training_t, requires_grad=True, dtype=torch.float32)
     training_y = torch.tensor(training_y, requires_grad=True, dtype=torch.float32)
     true_data = torch.tensor(true_data, dtype=torch.float32)
 
 
-# # Instantiate the PINN model and define optimizer
+# Instantiate the PINN model and define optimizer
 model = PINNModel()
 optimizer = optim.Adam(model.parameters(), lr=0.0005)
-#optimizer = optim.Adam(model.parameters(), lr=0.0005)
-#optimizer = optim.LBFGS(model.parameters())
+# optimizer = optim.LBFGS(model.parameters())
 
 #grid to test phys loss
 t_phys = torch.linspace(0,100,100, requires_grad=True)
@@ -98,10 +92,6 @@ for epoch in range(num_epochs):
     predictions_data = model(training_t)
     predictions_data = predictions_data.requires_grad_()
     data_loss = torch.mean((training_y - predictions_data)**2)
-    # print(prey_data.shape)
-    # print(pred_data.shape)
-    # print(prey_sample.shape)
-    # print(pred_sample.shape)
 
     predictions_phys = model(t_phys)
     predictions_phys = predictions_phys.requires_grad_()
@@ -109,18 +99,6 @@ for epoch in range(num_epochs):
     
     phys_loss = torch.mean((dPdt - r*predictions_phys*(1 - (predictions_phys/K)))**2)
     loss = data_loss + 0.01*phys_loss
-
-    # if epoch % 500 == 0:
-    #     print(epoch)
-    #     print(f'Epoch {epoch}, Loss: {loss.item()}')
-    #     #print(f'Physics Loss: {phys_loss}')
-    #     print(f'Data Loss: {data_loss}')
-    #     plt.plot(training_t.detach().numpy(), training_y.detach().numpy(),'bx')
-    #     plt.plot(t_phys.detach().numpy(), predictions_phys.detach().numpy(), 'g--')
-    #     # plt.plot(training_t.detach().numpy(), training_y.detach().numpy(), 'mD')
-    #     plt.plot(training_t.detach().numpy(), predictions_data.detach().numpy(), 'g+')
-    #     plt.plot(t, solution, 'r-')
-    #     plt.show()
 
     loss.backward()
 
@@ -131,18 +109,6 @@ test_t = test_t[:, np.newaxis]
 test_t = torch.tensor(test_t, requires_grad=True, dtype=torch.float32)
 
 results = model.forward(test_t)
-# test_y = torch.split(results, 1, dim=1)
-
-# plt.plot(t, solution[:, 0], label='Prey (x)')
-# plt.plot(t, solution[:, 1], label='Predator (y)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 0], label='Prey (x)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 1], label='Predator (y)')
-# plt.title('Lotka-Volterra Model')
-# plt.xlabel('Time')
-# plt.ylabel('Population')
-# plt.legend()
-# plt.grid(True)
-# plt.show()
 
 plt.plot(training_t.detach().numpy(),training_y.detach().numpy(), 'bx')
 plt.plot(t, solution, 'r-')

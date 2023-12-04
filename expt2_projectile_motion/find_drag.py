@@ -117,17 +117,12 @@ for epoch in range(num_epochs):
     optimizer.zero_grad()
     predictions_data = model(training_t)
     predictions_data = predictions_data.requires_grad_()
-    #print(predictions_data.shape)
     sx_pred = predictions_data[:,0]
     sy_pred = predictions_data[:,1]
     vx_pred = predictions_data[:,2]
     vy_pred = predictions_data[:,3]
 
     data_loss = torch.mean((sx_train - sx_pred)**2) + torch.mean((sy_train - sy_pred)**2) + torch.mean((vx_train - vx_pred)**2) + torch.mean((vy_train - vy_pred)**2)
-    # print(prey_data.shape)
-    # print(pred_data.shape)
-    # print(prey_sample.shape)
-    # print(pred_sample.shape)
 
     predictions_phys = model(t_phys)
     predictions_phys = predictions_phys.requires_grad_()
@@ -145,20 +140,15 @@ for epoch in range(num_epochs):
     dvydt = torch.autograd.grad(vy_phys, t_phys, grad_outputs=torch.ones_like(vy_phys), create_graph=True)[0]
     
     phys_loss = torch.mean((dsxdt - vx_phys)**2) + torch.mean((dsydt - vy_phys)**2) + torch.mean((dvxdt + mu*torch.sqrt(vx_phys**2 + vy_phys**2)*vx_phys)**2) + torch.mean((dvydt + mu*torch.sqrt(vx_phys**2 + vy_phys**2)*vy_phys + g)**2)
-    #n = predictions_phys.size(dim=0)-1
-    #boundary_loss = (start - predictions_phys[0].item())**2 + (end - predictions_phys[n].item())**2
-    loss = data_loss + 0.001*phys_loss #+ 10*boundary_loss.item()
+    loss = data_loss + 0.001*phys_loss
 
     if epoch % 500 == 0:
         print(epoch)
         print(f'Epoch {epoch}, Loss: {loss.item()}')
         print(f'Estimated mu: {mu}')
-        #print(f'Physics Loss: {phys_loss}')
         print(f'Data Loss: {data_loss}')
         plt.plot(sx_train.detach().numpy(), sy_train.detach().numpy(),'bx')
         plt.plot(sx_phys.detach().numpy(), sy_phys.detach().numpy(), 'g--')
-        # plt.plot(training_t.detach().numpy(), training_y.detach().numpy(), 'mD')
-        #plt.plot(training_t.detach().numpy(), predictions_data.detach().numpy(), 'g+')
         plt.plot(sx, sy, 'r-')
         plt.show()
 
@@ -179,18 +169,6 @@ test_t = torch.tensor(test_t, requires_grad=True, dtype=torch.float32)
 results = model.forward(test_t)
 sx_res = results[:,0]
 sy_res = results[:,1]
-# test_y = torch.split(results, 1, dim=1)
-
-# plt.plot(t, solution[:, 0], label='Prey (x)')
-# plt.plot(t, solution[:, 1], label='Predator (y)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 0], label='Prey (x)')
-# plt.plot(test_t.detach().numpy(), test_y.detach().numpy()[:, 1], label='Predator (y)')
-# plt.title('Lotka-Volterra Model')
-# plt.xlabel('Time')
-# plt.ylabel('Population')
-# plt.legend()
-# plt.grid(True)
-# plt.show()
 
 plt.plot(sx_train.detach().numpy(),sy_train.detach().numpy(), 'bx')
 plt.plot(sx, sy, 'r-')

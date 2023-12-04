@@ -122,8 +122,6 @@ for epoch in range(num_epochs):
         plt.plot(training_t.detach().numpy(), pred_data.detach().numpy(), 'bo')
         plt.plot(t_phys.detach().numpy(), prey_phys.detach().numpy(), 'm--')
         plt.plot(t_phys.detach().numpy(), pred_phys.detach().numpy(), 'g--')
-        #plt.plot(training_t.detach().numpy(), prey_sample.detach().numpy(), 'mD')
-        #plt.plot(training_t.detach().numpy(), pred_sample.detach().numpy(), 'g+')
         plt.plot(t, solution[:, 0], 'm-')
         plt.plot(t, solution[:, 1], 'g-')
         plt.show()
