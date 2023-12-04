@@ -1,70 +1,68 @@
-Experiment
+# Experiment 1: Logistic Growth
 
-1.1 No Physics loss with 700 epochs with training data from whole domain with 20 samples
-1.2 Physics loss with 700 epochs with training data from whole domain with 20 samples
+This experiment compares the performance of Physics-Informed Neural Networks (PINNs) with and without physics loss (normal neural network) on the logistic growth 1st order Ordinary Differential Equation (ODE).
 
-Remarks: Seems like both have similar performance as it seems like there is enough data to capture the
-complexity of the target function
+## Structure of the Neural Network
+All experiments are based on a 6-layer neural network with 256 neurons per layer. The Adam optimizer with a learning rate of 0.0005 is utilized.
 
-1.3 No physics loss with 700 epochs with training data from whole domain with 10 samples
-1.4 Physics loss with 700 epochs with training data from whole domain with 10 samples
+### 1.1 No Physics Loss
+- 700 epochs
+- Training data from the whole domain with 20 samples
 
-Remarks: Looks like the data is fit better with the added physics loss regularization as the data is
-becoming more sparse
+### 1.2 Physics Loss
+- 700 epochs
+- Training data from the whole domain with 20 samples
 
-1.5 No physics loss with 700 epochs with training data from whole domain with 5 samples
-1.6 Physics loss with 700 epochs with training data from whole domain with 5 samples (regularization of physics
-loss with weight 0.01 rather than the earlier 0.0001)
+**Remarks:** Both scenarios exhibit similar performance, suggesting sufficient data to capture the complexity of the target function.
 
-Remarks: It seems like the physics loss can greatly improve the learning when the weight is increased,
-in earlier experiments it seemed when the weight was too large that there would be underfitting as the
-physics loss would prevent the model from fitting the data, however, with less data, it seems like this is less
-of a factor and the regularization helps fit the data better
+### 1.3 No Physics Loss
+- 700 epochs
+- Training data from the whole domain with 10 samples
 
-Comments on logistic regression experiments: We see that the activation function is pivotal when training PINNs.
-When we first were developing the algorithm, we used the tanh activation function which led to the results below with
-physics loss included
+### 1.4 Physics Loss
+- 700 epochs
+- Training data from the whole domain with 10 samples
 
-Experiment 1.7: In this experiment we used the tanh activation function and as can be seen here we have that the
-model is not capable of learning. We believe this might be because the model gets stuck at a local optimum. We also think
-that this might be because of the phenomenon of vanishing gradients problem. This occurs when the gradient becomes extremely
-small in magnitude and thus the update does almost nothing.
+**Remarks:** The data fits better with the added physics loss regularization, indicating improved fit as the data becomes more sparse.
 
-We saw that the ReLU function worked much better and did not encounter the same vanishing gradients problem.
+### 1.5 No Physics Loss
+- 700 epochs
+- Training data from the whole domain with 5 samples
 
-Experiment 1.8 In this experiment we tried to reduce the domain the samples were taken on and its effects on the PINNs solution
-In order to get this we needed to greatly increase the number of epochs to 20000. However, we can see that the solution is much less 
-accurate, it still generally knows to decrease slope after a certain point.
+### 1.6 Physics Loss
+- 700 epochs
+- Training data from the whole domain with 5 samples (physics loss regularization with weight 0.01, rather than the earlier 0.0001)
 
-Experiment 1.9 This is the same experiment at 1.8 but in this one we only did data loss. Here after 20000 epochs we have that
-the neural network, not having any information about the underlying differential equation, just follows the trend of the data
-and keeps increasing.
+**Remarks:** Physics loss significantly improves learning when the weight is increased. Despite concerns of underfitting with larger weights, it appears less significant with less data, and regularization helps fit the data better.
 
-Experiment 1.10 We see do the same experiment as 1.9 but in this case the domain the samples are taken from is even smaller.
-We observe similar behavior to 1.9.
+## Comments on Logistic Regression Experiments
+Activation function choice is crucial when training PINNs. The tanh activation function initially used led to poor results with physics loss.
 
-Experiment 1.11 Same as 1.10 except with physics loss included. Again we see that the learned solution is not very accurate but
-the algorithm at least knows to reduce slope.
+### Experiment 1.7
+- Tanh activation function
+- Model struggles to learn, possibly due to getting stuck at a local optimum or vanishing gradients problem.
 
-Other comments: From this case we see that the model is much harder to build and also much slower than classical methods
-for solving the same problem. However, one advantage of this PINNs method is that once the model is trained you are able to
-recalculate the predicted value for any time value you want. In contrast, with traditional methods, in order to get the value of a point
-that is not on the mesh you initially set up, you need to make an entirely new mesh and start over. However, it seems like in order to actually used
-this PINNs method in practice you would want to solve a much more complex problem which is harder for traditional methods to solve. However, as this is
-only a pedagogical project we stick to relatively simple ODEs.
+### Experiment 1.8
+- ReLU activation function
+- Reduced domain samples with increased epochs (20000)
+- Solution is less accurate but generally follows the correct slope trend.
 
-2 Experiments for Projectile Motion with demonstration
+### Experiment 1.9
+- ReLU activation function
+- Data loss only
+- After 20000 epochs, the neural network follows the data trend without information about the underlying differential equation.
 
-These are the experiments that we walk students through in our problem set since this turned out to be the problem that our PINNs algorithm was able to solve most accurately.
+### Experiment 1.10
+- ReLU activation function
+- Similar behavior to Experiment 1.9 with a smaller sample domain.
 
-The code is in pset_nn_sol.jpeg and the results for the neural network without physics loss is in pset_nn_sol.jpeg.
-The results for the PINNs algorithm are in pset_PINN_sol.jpeg. We see that the neural network with only data loss did not output
-a physically feasible flight path, however, we see that the PINNs was able to get a fairly accurate flight path with relatively few
-epochs.
+### Experiment 1.11
+- ReLU activation function
+- Physics loss included
+- Learned solution is not very accurate, but the algorithm understands to reduce slope.
 
-
-Next, we generalize to a more complex nonlinear ODE, the Lotka-Volterra Equation which models the population dynamics of an ecosystem consisting of
-a prey species and a predator species. The draft for the code for this is located in our pred_prey_PINN.ipynb
-file, however, this code still needs some tuning with the parameters as we wish to get better results.
-We plan on doing similar experiments to the above with this ODE. We also want to do an experiment demonstrating the ability of 
-PINNs to solve inverse problems.
+## Other Comments
+- Building and training the model is more challenging and slower than classical methods for the same problem.
+- An advantage of PINNs is the ability to recalculate predicted values for any time value after training.
+- In practice, PINNs may be more beneficial for solving complex problems that are challenging for traditional methods.
+- This project focuses on relatively simple ODEs for pedagogical purposes.
