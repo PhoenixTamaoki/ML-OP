@@ -18,7 +18,7 @@
 Welcome to the ML Optimization Group Project repository! Our team, consisting of Phoenix Tamaoki, Jichuan Wu, Yuyang Gong, and Calvin Ang, is focused on exploring and discussing the Physically Informed Neural Networks (PINNs) model and comparing it to conventional Neural Networks (NN).
 
 ## Repository Contents
-This repository contains the problem set and three experiments we have conducted, which are in the presentation slides.
+This repository contains the problem set and three experiments we have conducted, which are in the presentation slides, and lecture notes. See lecture notes for more details about the experiments.
 
 ## Problem Set
 The problem set is available in the root directory of this repository. It contains the following files:
