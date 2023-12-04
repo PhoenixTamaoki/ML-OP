@@ -3,7 +3,7 @@
 This experiment evaluates the performance of Physics-Informed Neural Networks (PINNs) with and without physics loss (normal neural network) on the projectile motion 2nd order Ordinary Differential Equation (ODE).
 
 ## Structure of the Neural Network
-Similar to Experiment 1, the neural network consists of 6 layers with 256 neurons per layer. The Adam optimizer is used with a learning rate of 0.0005.
+Similar to Experiment 1, the neural network consists of 5 layers with 256 neurons per layer. The Adam optimizer is used with a learning rate of 0.0005.
 
 ### Experiments for Projectile Motion with Demonstration
 

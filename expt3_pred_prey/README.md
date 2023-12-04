@@ -3,7 +3,7 @@
 This experiment assesses the performance of Physics-Informed Neural Networks (PINNs) with and without physics loss (normal neural network) on the predator-prey model using the Lotka-Volterra equations.
 
 ## Structure of the Neural Network
-Similar to Experiment 1, the neural network architecture comprises 6 layers with 256 neurons per layer. The Adam optimizer is employed with a learning rate of 0.0005.
+Similar to Experiment 1, the neural network architecture comprises 5 layers with 256 neurons per layer. The Adam optimizer is employed with a learning rate of 0.0005.
 
 ### Lotka-Volterra Equation for Population Dynamics
 

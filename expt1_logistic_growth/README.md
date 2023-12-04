@@ -3,7 +3,7 @@
 This experiment compares the performance of Physics-Informed Neural Networks (PINNs) with and without physics loss (normal neural network) on the logistic growth 1st order Ordinary Differential Equation (ODE).
 
 ## Structure of the Neural Network
-All experiments are based on a 6-layer neural network with 256 neurons per layer. The Adam optimizer with a learning rate of 0.0005 is utilized.
+All experiments are based on a 5-layer neural network with 256 neurons per layer. The Adam optimizer with a learning rate of 0.0005 is utilized.
 
 ### 1.1 No Physics Loss
 - 700 epochs

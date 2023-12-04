@@ -35,7 +35,7 @@ The problem set is available in the root directory of this repository. It contai
 - `pset_experiment.py`: Python script containing the code for the experiments we do for the problem set. It just have the code for the experiments, not the code for the solutions. The code for the solutions is in the Jupyter notebook `pset_sol.ipynb`.
 
 ## Experiment Structure
-All experiments follow a consistent structure, utilizing a 6-layer neural network with 256 neurons per layer. The Adam optimizer with a learning rate of 0.0005 is employed for training.
+All experiments follow a consistent structure, utilizing a 5-layer neural network with 256 neurons per layer. The Adam optimizer with a learning rate of 0.0005 is employed for training.
 
 ## Experiment Highlights
 
