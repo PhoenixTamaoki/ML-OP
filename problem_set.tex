@@ -2,9 +2,34 @@
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{nicematrix}
+\usepackage{arydshln}
+\usepackage{listings}
+\lstset{
+basicstyle=\footnotesize\ttfamily,
+columns=flexible,
+breaklines=true,
+commentstyle=\color{red},
+keywordstyle=\color{black}\bfseries,
+keepspaces=true
+}
+\usepackage{calc}
+\usepackage[margin=1.in]{geometry}
+
+\usepackage{graphicx}
+\graphicspath{ {./image/} }
+\pagestyle{empty}
+%Setup hyperref package, and colours for links
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+
+%for social icons
+\usepackage{fontawesome5}
 
 \title{ML-Opt-Problem-Set}
-\author{angc2 }
+\author{Calvin Ang, Jichuan Wu, Phoenix Tamaoki, Yuyang Gong}
 \date{November 2023}
 
 \begin{document}
@@ -15,8 +40,7 @@
 
 In this problem set you will develop your own PINNs solution to $2$-dimensional projectile motion with drag. The differential equation for drag is as follows
 
-$$\frac{d^2 \Vec{s}}{dt^2} = - \mu \left \lVert 
-\frac{d \Vec{s}}{dt} \right\rVert_2 \frac{d \Vec{s}}{dt} - \Vec{g}$$
+$$\frac{d^2 \Vec{s}}{dt^2} = - \mu \left \lVert \frac{d \Vec{s}}{dt} \right\rVert_2 \frac{d \Vec{s}}{dt} - \Vec{g}$$
 
 making this into a linear system we have that if the displacement in the $x$ and $y$ direction are $s_x$ and $s_y$ and the velocities in the $x$ and $y$ direction are $v_x$ and $v_y$ that the differential equation becomes
 
@@ -31,46 +55,42 @@ where $\mu$ being the coefficient of drag and $g$ being the acceleration of grav
 
 \section{Construct your data}
 
-\subsection{(a) Construct your data}
+\subsection{(a) Get started}
 
 % First, you will need to construct your data. Using $\mu = 1$ you will first need to construct a solution to the differential equation. As there are no closed-form solutions, we will need to solve them numerically. Install \texttt{scipy.integrate} and look into the documentation of \texttt{solve\_ivp} using the initial condition of $\langle 0, 0, 10,10 \rangle$ over the range of $t = 0$ to $t = 0.85$.\\
 \begin{itemize}
-    \item Implement the equations of motion for a projectile based on the given equation
-    \item Use the odeint function from the scipy.integrate module to solve the equations of motion for a projectile launched with an initial velocity of $10\text{ } m/s$ at an angle of 45 degrees. Assume $mu = 1$ and $g = 9.8$
-    \item Generate training data for a machine learning model. Select 10 random time points from the solution and add Gaussian noise to the position and velocity at these time points to simulate measurement errors.
+    \item Implement the equations of motion for a projectile based on the given equation. Hint:(\texttt{def proj\_motion(y,t)})
+    \item Use the \texttt{odeint} function from the \texttt{scipy.integrate} module to solve the equations of motion for a projectile launched with an initial velocity of $10\text{ } m/s$ at an angle of 45 degrees. Using $g = 9.8$:
+    \begin{lstlisting}[language=Python, numbers=left, stepnumber=1, firstline=1,frame=single]
+# Initial condition
+y0 = [0,0,10,10]
+# Time points
+t = np.linspace(0, 0.85,500)
+
+# Solve the ODE
+solution = odeint(proj_motion, y0, t) # y0 solve range, t the linspace  
+    \end{lstlisting}
 \end{itemize}
 
 
 \subsection{(b) Sample your data with noise}
 
-Next, we will select our data. Take only a third of the data from the left-hand-side of the data that you collected above and make that into your training data. You will also want to add in some gaussian noise with values from $0.1$ to $-0.1$.
+Next, we will select our data. Take only a third of the data from the left-hand side of the data that you collected above and make that into your training data. You will also want to add in some Gaussian noise with values from $0.1$ to $-0.1$.
 
 \section{Construct your solver}
 
-% \subsection{(a)}
-
-% First, you will need to design your neural network architecture, this neural network will only need $1$ input value but will give $4$ outputs since we will need the outputs of both the $x$ and $y$ position of the projectile as well as its velocity in the $x$ and $y$ component. You will also need to design the forward algorithm using the ReLU activation function. Use pytorch. We found that training worked well with 4 hidden layers which have a large amount of neurons $>100$.
-
-% \subsection{(b)}
-
-% Next, you will need to train your neural network using only the normal data loss and output your results. Use mean squared loss in order to calculate the data loss. Plot your results with the true solution, the data points with noise, and plot the prediction of your neural network of the path of the projectile.
-
-% \subsection{(C)}
-
-% Next we will construct the physics loss term. Use \texttt{pytorch}'s \texttt{autograd} in order to compute the necessary derivatives. Now plot your results with the true solution, the data points with noise, and the prediction of your PINN algorithm for the path of the projectile. Compare with your result from part (b).
-
 \begin{itemize}
-    \item Implement a PINN model using PyTorch. The model should have an input layer with one neuron (representing time), five hidden layers each with 256 neurons, and an output layer with four neurons (representing the x and y positions and velocities). Use the ReLU activation function for the hidden layers.
     \item Convert the training data (time,position,velocity) into PyTorch tensors.
+    \item Implement a PINN model using PyTorch. The model should have an input layer with one neuron (representing time), five hidden layers each with 256 neurons, and an output layer with four neurons (representing the x and y positions and velocities). Use the \texttt{ReLU} activation function for the hidden layers.
 \end{itemize}
 
 \section{Train your solver}
 \begin{itemize}
-    \item Set up the Adam optimizer with a learning rate of 0.0005. The optimizer will be used to adjust the parameters of the PINN model to minimize the loss function.
+    \item Set up the Adam optimizer with a learning rate of $0.0005$. The optimizer will be used to adjust the parameters of the PINN model to minimize the loss function.
     \item Implement a training loop that runs for a specified number of epochs. In each epoch, perform the following steps:\begin{itemize}
         \item Zero the gradients of the model parameters.
-        \item Compute the model’s predictions for the training data and calculate the data mismatch loss.
-        \item Compute the model’s predictions for a set of “physics” points and calculate the physics informed loss. The physics informed loss ensures that the learned solution obeys the physics (the equations of motion).
+        \item Compute the model's predictions for the training data and calculate the data mismatch loss.
+        \item Compute the model's predictions for a set of “physics” points and calculate the physics-informed loss. The physics-informed loss ensures that the learned solution obeys the physics (the equations of motion).
         \item Add the data mismatch loss and the physics informed loss to get the total loss.
         \item Backpropagate the loss and update the model parameters using the optimizer.
     \end{itemize}
@@ -80,13 +100,13 @@ Next, we will select our data. Take only a third of the data from the left-hand-
 \section{Test your solver}
 \begin{itemize}
     \item Generate a set of test data using the same method as the training data.
-    \item Plot the test data and the learned solution.
+    \item Plot the test data and the learned solution, what have you discovered?
 \end{itemize}
 
 \section{Solutions}
 
-For 2(c) we see that in the plain neural network case that the predicted path is not able to extrapolate anything meaningful from the data, however, given the physics loss term we see that the PINNs algorithm is able to learn a close approximation to the actual projectile motion.
+We see that in the plain neural network case, the predicted path is not able to extrapolate anything meaningful from the data, however, given the physics loss term we see that the PINNs algorithm is able to learn a close approximation to the actual projectile motion.
 
-For the code solution see \texttt{pset\_sol.py} in the github repository along with the graphs \texttt{pset\_nn\_sol.jpeg} and \texttt{pset\_PINN\_sol.jpeg}.
+For the code solution see \texttt{pset\_sol.ipynb} in the GitHub repository along with the graphs \texttt{pset\_nn\_sol.jpeg} and \texttt{pset\_PINN\_sol.jpeg}. \href{https://github.com/PhoenixTamaoki/ML-OP}{\raisebox{-0.05\height}\faGithub\ Project repo}
 
 \end{document}
